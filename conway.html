@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conway background</title>
+  <!-- <link rel="icon" href="img/favicon.png" type="image/png"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.0-rc.1/pure-min.css">
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mithril/2.0.4/mithril.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+  <script>
+    var root = document.body
+    var board_width = 1920;
+
+    // Utils
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+
+    // Variable and parameters
+    var BoardState = {
+      squareSize: 0,
+      size: {
+        width: 0,
+        height: 0
+      },
+      dimension: {
+        width: 100,
+        height: 100
+      },
+      gray_colors: ["#aaaaaa", "#555555", "#2a2a2a", "#151515", "#000"],
+      blue_colors: ["#aaaaff"],
+      stroke_color: "#000000"
+    }
+
+    // board Object (aka. view)
+    var Board = {
+      oninit: function (vnode) {
+        BoardState.size.width = vnode.attrs.board_width;
+        BoardState.squareSize = BoardState.size.width / BoardState.dimension.width;
+        BoardState.size.height = BoardState.dimension.height * BoardState.squareSize;
+      },
+      oncreate: function (vnode) {
+        var sb = Snap(vnode.dom);
+
+        for (let j = 0; j < BoardState.dimension.height; j++) {
+          for (let i = 0; i < BoardState.dimension.width; i++) {
+            let square = sb.rect(i * BoardState.squareSize, j * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
+            square.attr({ fill: BoardState.gray_colors[getRandomInt(BoardState.gray_colors.length+1)] });
+            square.attr({ stroke: BoardState.stroke_color, strokeWidth: 1 });
+          }
+        }
+      },
+      view: function (vnode) {
+        return m("svg#board", { width: BoardState.size.width, height: BoardState.size.height });
+      }
+    }
+
+    // DOM
+    var Client = {
+      view: function (vnode) {
+        return m("main.main",
+          m("div.pure-g", m(".pure-u-1", m(Board, { board_width: board_width })))
+        )
+      }
+    }
+
+    m.mount(root, Client)
+
+  </script>
+</body>
+
+</html>
