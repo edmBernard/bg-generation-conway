@@ -15,15 +15,45 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mithril/2.0.4/mithril.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
   <script>
-    var root = document.body
+    // Parameters
     var board_width = 1920;
+    var grid_dim_y = 96 * 2.;
+    var grid_dim_x = 54 * 2.;
+    line1 = [0,1,1,0,1,0,0,1,1,0,1,1]
+    line2 = [0,0,0,1,1,1,1,1,0,0,0,1]
+    line3 = [0,1,0,0,1,0,0,1,0,0,1,0]
+    braille_offset_x = -5 * 2.
+    braille_offset_y = -5 * 2.
+    factor = 3
 
+
+    var root = document.body
     // Utils
     function getRandomInt(max) {
-      return Math.floor(Math.random() * Math.floor(max));
+      return Math.floor(Math.pow(Math.random(), 2) * Math.floor(max));
     }
 
-    // Variable and parameters
+    braille_x = []
+    braille_y = []
+    braille_offset_y = braille_offset_y >= 0 ? braille_offset_y : grid_dim_y - 1 + braille_offset_y - (line1.length + 1) * factor
+    braille_offset_x = braille_offset_x >= 0 ? braille_offset_x : grid_dim_x - 1 + braille_offset_x - (3 + 1) * factor
+
+    for (i=0; i < line1.length; i++) {
+      if (line1[i] == 1) {
+        braille_x.push(braille_offset_x + 0 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+      if (line2[i] == 1) {
+        braille_x.push(braille_offset_x + 1 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+      if (line3[i] == 1) {
+        braille_x.push(braille_offset_x + 2 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+    }
+
+    // Board Internal State
     var BoardState = {
       squareSize: 0,
       size: {
@@ -31,14 +61,15 @@
         height: 0
       },
       dimension: {
-        width: 100,
-        height: 100
+        width: grid_dim_y,
+        height: grid_dim_x
       },
-      gray_colors: [Snap.rgb(140, 140, 140), Snap.rgb(70, 70, 70), Snap.rgb(30, 30, 30), Snap.rgb(20, 20, 20), Snap.rgb(0, 0, 0)],
-      blue_colors: [Snap.rgb(196, 238, 255)],
-      stroke_color: "#000000",
-      blue_pixels_x: [0, 1, 10, 11, 20, 21],
-      blue_pixels_y: [0, 1, 10, 11, 20, 21]
+      gray_colors: [Snap.rgb(0, 0, 0), Snap.rgb(20, 20, 20), Snap.rgb(40, 40, 40), Snap.rgb(70, 70, 70), Snap.rgb(140, 140, 140)],
+      blue_colors: [Snap.rgb(196, 238, 255)],  // blue
+      // blue_colors: [Snap.rgb(255, 249, 196)],  // yellow
+      stroke_color: Snap.rgb(0, 0, 0),
+      blue_pixels_x: braille_x,
+      blue_pixels_y: braille_y
     }
 
     // board Object (aka. view)
@@ -55,13 +86,13 @@
           for (let i = 0; i < BoardState.dimension.width; i++) {
             let square = sb.rect(i * BoardState.squareSize, j * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
             square.attr({ fill: BoardState.gray_colors[getRandomInt(BoardState.gray_colors.length)] });
-            square.attr({ stroke: BoardState.stroke_color, strokeWidth: 1 });
+            square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
           }
         }
         for (k = 0; k < BoardState.blue_pixels_x.length; k++) {
           let square = sb.rect(BoardState.blue_pixels_y[k] * BoardState.squareSize, BoardState.blue_pixels_x[k] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
           square.attr({ fill: BoardState.blue_colors[getRandomInt(BoardState.blue_colors.length)] });
-          square.attr({ stroke: BoardState.stroke_color, strokeWidth: 1 });
+          square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
         }
       },
       view: function (vnode) {
