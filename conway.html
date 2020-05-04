@@ -37,7 +37,8 @@
       gray_colors: [Snap.rgb(140, 140, 140), Snap.rgb(70, 70, 70), Snap.rgb(30, 30, 30), Snap.rgb(20, 20, 20), Snap.rgb(0, 0, 0)],
       blue_colors: [Snap.rgb(196, 238, 255)],
       stroke_color: "#000000",
-      blue_pixels: [[0, 0], [1, 1], [10, 10], [11, 11], [20, 20], [21, 21]]
+      blue_pixels_x: [0, 1, 10, 11, 20, 21],
+      blue_pixels_y: [0, 1, 10, 11, 20, 21]
     }
 
     // board Object (aka. view)
@@ -57,8 +58,8 @@
             square.attr({ stroke: BoardState.stroke_color, strokeWidth: 1 });
           }
         }
-        for (k = 0; k < BoardState.blue_pixels.length; k++) {
-          let square = sb.rect(BoardState.blue_pixels[k][0] * BoardState.squareSize, BoardState.blue_pixels[k][1] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
+        for (k = 0; k < BoardState.blue_pixels_x.length; k++) {
+          let square = sb.rect(BoardState.blue_pixels_y[k] * BoardState.squareSize, BoardState.blue_pixels_x[k] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
           square.attr({ fill: BoardState.blue_colors[getRandomInt(BoardState.blue_colors.length)] });
           square.attr({ stroke: BoardState.stroke_color, strokeWidth: 1 });
         }
