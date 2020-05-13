@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conway background</title>
+  <!-- <link rel="icon" href="img/favicon.png" type="image/png"> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.0-rc.1/pure-min.css">
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mithril/2.0.4/mithril.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+  <script>
+    // Parameters
+    var board_width = 1080; // 1080 x 2340
+    var grid_dim_x = 117 * 1.;
+    var grid_dim_y = 54 * 1.;
+    line1 = [0,1,1,0,1,0,0,1,1,0,1,1]
+    line2 = [0,0,0,1,1,1,1,1,0,0,0,1]
+    line3 = [0,1,0,0,1,0,0,1,0,0,1,0]
+    braille_offset_x = 5 * 1.
+    braille_offset_y = 10 * 1.
+    factor = 3
+
+
+    var root = document.body
+    // Utils
+    function getRandomInt(max) {
+      return Math.floor(Math.pow(Math.random(), 2) * Math.floor(max));
+    }
+
+    braille_x = []
+    braille_y = []
+    braille_offset_y = braille_offset_y >= 0 ? braille_offset_y : grid_dim_y - 1 + braille_offset_y - (line1.length + 1) * factor
+    braille_offset_x = braille_offset_x >= 0 ? braille_offset_x : grid_dim_x - 1 + braille_offset_x - (3 + 1) * factor
+
+    for (i=0; i < line1.length; i++) {
+      if (line1[i] == 1) {
+        braille_x.push(braille_offset_x + 0 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+      if (line2[i] == 1) {
+        braille_x.push(braille_offset_x + 1 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+      if (line3[i] == 1) {
+        braille_x.push(braille_offset_x + 2 * factor);
+        braille_y.push(braille_offset_y + i * factor);
+      }
+    }
+
+    // Board Internal State
+    var BoardState = {
+      squareSize: 0,
+      size: {
+        width: 0,
+        height: 0
+      },
+      dimension: {
+        width: grid_dim_y,
+        height: grid_dim_x
+      },
+      gray_colors: [Snap.rgb(0, 51, 153), Snap.rgb(0, 34, 102), Snap.rgb(0, 77, 230), Snap.rgb(51, 119, 255), Snap.rgb(102, 204, 255)],
+      blue_colors: [Snap.rgb(255, 234, 0)],  // blue
+      stroke_color: Snap.rgb(0, 34, 102),
+      blue_pixels_x: braille_x,
+      blue_pixels_y: braille_y
+    }
+
+    // board Object (aka. view)
+    var Board = {
+      oninit: function (vnode) {
+        BoardState.size.width = vnode.attrs.board_width;
+        BoardState.squareSize = BoardState.size.width / BoardState.dimension.width;
+        BoardState.size.height = BoardState.dimension.height * BoardState.squareSize;
+      },
+      oncreate: function (vnode) {
+        var sb = Snap(vnode.dom);
+
+        for (let j = 0; j < BoardState.dimension.height; j++) {
+          for (let i = 0; i < BoardState.dimension.width; i++) {
+            let square = sb.rect(i * BoardState.squareSize, j * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
+            square.attr({ fill: BoardState.gray_colors[getRandomInt(BoardState.gray_colors.length)] });
+            square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
+          }
+        }
+        for (k = 0; k < BoardState.blue_pixels_x.length; k++) {
+          let square = sb.rect(BoardState.blue_pixels_y[k] * BoardState.squareSize, BoardState.blue_pixels_x[k] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
+          square.attr({ fill: BoardState.blue_colors[getRandomInt(BoardState.blue_colors.length)] });
+          square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
+        }
+      },
+      view: function (vnode) {
+        return m("svg#board", { width: BoardState.size.width, height: BoardState.size.height });
+      }
+    }
+
+    // DOM
+    var Client = {
+      view: function (vnode) {
+        return m("main.main",
+          m("div.pure-g", m(".pure-u-1", m(Board, { board_width: board_width })))
+        )
+      }
+    }
+
+    m.mount(root, Client)
+
+  </script>
+</body>
+
+</html>
