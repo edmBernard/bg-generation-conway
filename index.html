@@ -64,25 +64,37 @@
         width: grid_dim_y,
         height: grid_dim_x
       },
-      // gray_colors: [Snap.rgb(0, 0, 0), Snap.rgb(20, 20, 20), Snap.rgb(40, 40, 40), Snap.rgb(70, 70, 70), Snap.rgb(140, 140, 140)],  // gray
-      // stroke_color: Snap.rgb(0, 0, 0), // gray
-
-      // gray_colors: [Snap.rgb(153, 0, 0), Snap.rgb(102, 0, 0), Snap.rgb(230, 0, 0), Snap.rgb(255, 51, 51), Snap.rgb(255, 102, 102)],  // red
-      // stroke_color: Snap.rgb(102, 0, 0), // red
-
-      // gray_colors: [Snap.rgb(0, 51, 153), Snap.rgb(0, 34, 102), Snap.rgb(0, 77, 230), Snap.rgb(51, 119, 255), Snap.rgb(102, 204, 255)],  // blue
-      // stroke_color: Snap.rgb(0, 34, 102),  // blue
-
-      gray_colors: [Snap.rgb(255, 230, 0), Snap.rgb(242, 202, 41), Snap.rgb(240, 216, 0), Snap.rgb(255, 240, 107)],  // yellow
-      stroke_color: Snap.rgb(230, 207, 0), // yellow
-
-      // gray_colors: [Snap.rgb(240, 120, 0), Snap.rgb(240, 166, 92), Snap.rgb(240, 144, 0), Snap.rgb(240, 168, 0), Snap.rgb(240, 192, 0)],  // orange
-      // stroke_color: Snap.rgb(240, 100, 0), // orange
-
-      blue_colors: [Snap.rgb(196, 238, 255)],  // blue
-      // blue_colors: [Snap.rgb(255, 249, 196)],  // yellow
-      blue_pixels_x: braille_x,
-      blue_pixels_y: braille_y
+      color_idx: 2,
+      colors_palette: [
+        {
+          color: "gray",
+          data: [Snap.rgb(0, 0, 0), Snap.rgb(20, 20, 20), Snap.rgb(40, 40, 40), Snap.rgb(70, 70, 70), Snap.rgb(140, 140, 140)],  // gray
+          stroke: Snap.rgb(0, 0, 0), // gray
+        },
+        {
+          color: "red",
+          data: [Snap.rgb(153, 0, 0), Snap.rgb(102, 0, 0), Snap.rgb(230, 0, 0), Snap.rgb(255, 51, 51), Snap.rgb(255, 102, 102)],  // red
+          stroke: Snap.rgb(102, 0, 0), // red
+        },
+        {
+          color: "blue",
+          data: [Snap.rgb(0, 51, 153), Snap.rgb(0, 34, 102), Snap.rgb(0, 77, 230), Snap.rgb(51, 119, 255), Snap.rgb(102, 204, 255)],  // blue
+          stroke: Snap.rgb(0, 34, 102),  // blue
+        },
+        {
+          color: "yellow",
+          data: [Snap.rgb(255, 230, 0), Snap.rgb(242, 202, 41), Snap.rgb(240, 216, 0), Snap.rgb(255, 240, 107)],  // yellow
+          stroke: Snap.rgb(230, 207, 0), // yellow
+        },
+        {
+          color: "orange",
+          data: [Snap.rgb(240, 120, 0), Snap.rgb(240, 166, 92), Snap.rgb(240, 144, 0), Snap.rgb(240, 168, 0), Snap.rgb(240, 192, 0)],  // orange
+          stroke: Snap.rgb(240, 100, 0), // orange
+        }
+      ],
+      message_colors: [Snap.rgb(196, 238, 255)],  // blue
+      message_pixels_x: braille_x,
+      message_pixels_y: braille_y
     }
 
     // board Object (aka. view)
@@ -98,14 +110,14 @@
         for (let j = 0; j < BoardState.dimension.height; j++) {
           for (let i = 0; i < BoardState.dimension.width; i++) {
             let square = sb.rect(i * BoardState.squareSize, j * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
-            square.attr({ fill: BoardState.gray_colors[getRandomInt(BoardState.gray_colors.length)] });
-            square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
+            square.attr({ fill: BoardState.colors_palette[BoardState.color_idx].data[getRandomInt(BoardState.colors_palette[BoardState.color_idx].data.length)] });
+            square.attr({ stroke: BoardState.colors_palette[BoardState.color_idx].stroke, strokeWidth: 4 });
           }
         }
-        for (k = 0; k < BoardState.blue_pixels_x.length; k++) {
-          let square = sb.rect(BoardState.blue_pixels_y[k] * BoardState.squareSize, BoardState.blue_pixels_x[k] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
-          square.attr({ fill: BoardState.blue_colors[getRandomInt(BoardState.blue_colors.length)] });
-          square.attr({ stroke: BoardState.stroke_color, strokeWidth: 4 });
+        for (k = 0; k < BoardState.message_pixels_x.length; k++) {
+          let square = sb.rect(BoardState.message_pixels_y[k] * BoardState.squareSize, BoardState.message_pixels_x[k] * BoardState.squareSize, BoardState.squareSize, BoardState.squareSize);
+          square.attr({ fill: BoardState.message_colors[getRandomInt(BoardState.message_colors.length)] });
+          square.attr({ stroke: BoardState.colors_palette[BoardState.color_idx].stroke, strokeWidth: 4 });
         }
       },
       view: function (vnode) {
