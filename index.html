@@ -30,21 +30,21 @@
 
       braille_x = []
       braille_y = []
-      braille_offset_y = braille_offset_y >= 0 ? braille_offset_y : grid_dim_y - 1 + braille_offset_y - (line1.length + 1) * factor
-      braille_offset_x = braille_offset_x >= 0 ? braille_offset_x : grid_dim_x - 1 + braille_offset_x - (3 + 1) * factor
+      braille_offset_x = braille_offset_x >= 0 ? braille_offset_x : grid_dim_x - 1 + braille_offset_x - (line1.length + 1) * factor
+      braille_offset_y = braille_offset_y >= 0 ? braille_offset_y : grid_dim_y - 1 + braille_offset_y - (3 + 1) * factor
 
       for (i=0; i < line1.length; i++) {
         if (line1[i] == 1) {
-          braille_x.push(braille_offset_x + 0 * factor);
-          braille_y.push(braille_offset_y + i * factor);
+          braille_x.push(braille_offset_y + 0 * factor);
+          braille_y.push(braille_offset_x + i * factor);
         }
         if (line2[i] == 1) {
-          braille_x.push(braille_offset_x + 1 * factor);
-          braille_y.push(braille_offset_y + i * factor);
+          braille_x.push(braille_offset_y + 1 * factor);
+          braille_y.push(braille_offset_x + i * factor);
         }
         if (line3[i] == 1) {
-          braille_x.push(braille_offset_x + 2 * factor);
-          braille_y.push(braille_offset_y + i * factor);
+          braille_x.push(braille_offset_y + 2 * factor);
+          braille_y.push(braille_offset_x + i * factor);
         }
       }
       return {
